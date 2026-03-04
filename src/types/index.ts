@@ -1,4 +1,4 @@
-type JoinFormData = {
+export type JoinFormData = {
   fullName: string;
   email: string;
   handle: string;
@@ -10,5 +10,3 @@ type JoinFormData = {
   postingDays: string[];
   goal: string;
 };
-
-export type { JoinFormData };

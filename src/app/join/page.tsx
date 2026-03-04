@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,14 +20,7 @@ const DAYS = [
   "Sunday",
 ];
 const FREQUENCIES = ["3 times", "4 times", "5 times", "6–7 times"];
-const PLATFORMS = [
-  "Instagram",
-  "TikTok",
-  "YouTube",
-  "X (Twitter)",
-  "LinkedIn",
-  "Other",
-];
+const PLATFORMS = ["Instagram", "TikTok", "YouTube", "X", "LinkedIn", "Other"];
 
 const initialForm: JoinFormData = {
   fullName: "",
@@ -93,7 +87,8 @@ export default function JoinPage() {
     return Object.keys(newErrors).length === 0;
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (!validate()) return;
     setStatus("loading");
     try {
@@ -108,18 +103,43 @@ export default function JoinPage() {
   if (status === "success") {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="max-w-lg text-center">
-          <p className="text-accent text-xs tracking-[0.4em] uppercase mb-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 24 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-lg text-center"
+        >
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-[hsl(var(--accent))] text-xs tracking-[0.4em] uppercase mb-6"
+          >
             You&apos;re locked in
-          </p>
-          <h1 className="font-['Bebas_Neue'] text-8xl text-foreground leading-none mb-6">
-            NOW <span className="text-accent">EXECUTE.</span>
-          </h1>
-          <p className="text-muted-foreground font-light leading-relaxed mb-10">
+          </motion.p>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="font-['Bebas_Neue'] text-8xl text-foreground leading-none mb-6"
+          >
+            NOW <span className="text-[hsl(var(--accent))]">EXECUTE.</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.55 }}
+            className="text-muted-foreground font-light leading-relaxed mb-10"
+          >
             Check your inbox — the Project Relentless guide and your 30-day
             tracker are on their way. Week 0 starts now. Plan before you post.
-          </p>
-          <div className="border border-border p-6 text-left mb-10">
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.65 }}
+            className="border border-border p-6 text-left mb-10"
+          >
             <p className="text-xs tracking-widest uppercase text-muted-foreground mb-4">
               Your commitment
             </p>
@@ -155,16 +175,24 @@ export default function JoinPage() {
                 </span>
               </div>
             </div>
-          </div>
-          <Link href="/">
-            <Button
-              variant="outline"
-              className="rounded-none tracking-widest uppercase text-xs border-border"
-            >
-              Back to Home
-            </Button>
-          </Link>
-        </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.75 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <Link href="/">
+              <Button
+                variant="outline"
+                className="rounded-none tracking-widest uppercase text-xs border-border hover:text-white"
+              >
+                Back to Home
+              </Button>
+            </Link>
+          </motion.div>
+        </motion.div>
       </main>
     );
   }
@@ -172,16 +200,14 @@ export default function JoinPage() {
   // ---- FORM ----
   return (
     <main className="min-h-screen bg-background text-foreground">
-      {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5 border-b border-border/40 backdrop-blur-sm bg-background/80">
-        <Link href="/" className="font-['Bebas_Neue'] text-xl tracking-widest">
-          PROJECT<span className="text-accent">.</span>RELENTLESS
-        </Link>
-      </nav>
-
       <div className="max-w-2xl mx-auto px-6 pt-36 pb-24">
         {/* Header */}
-        <div className="mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-14"
+        >
           <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4">
             Week 0 — Planning
           </p>
@@ -193,11 +219,16 @@ export default function JoinPage() {
             Complete this before posting begins. This is your plan for the next
             30 days. Be specific — vague goals produce vague results.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="space-y-10">
+        <form className="space-y-10" onSubmit={handleSubmit}>
           {/* Section 1: Identity */}
-          <section className="space-y-5">
+          <motion.section
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-5"
+          >
             <div className="flex items-center gap-4">
               <span className="font-['Bebas_Neue'] text-3xl text-accent/40">
                 01
@@ -255,10 +286,15 @@ export default function JoinPage() {
                 </div>
               </Field>
             </div>
-          </section>
+          </motion.section>
 
           {/* Section 2: Content Pillars */}
-          <section className="space-y-5">
+          <motion.section
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="space-y-5"
+          >
             <div className="flex items-center gap-4">
               <span className="font-['Bebas_Neue'] text-3xl text-accent/40">
                 02
@@ -377,10 +413,15 @@ export default function JoinPage() {
                 className={inputClass(false)}
               />
             </Field>
-          </section>
+          </motion.section>
 
           {/* Section 3: Schedule */}
-          <section className="space-y-5">
+          <motion.section
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="space-y-5"
+          >
             <div className="flex items-center gap-4">
               <span className="font-['Bebas_Neue'] text-3xl text-accent/40">
                 03
@@ -424,10 +465,15 @@ export default function JoinPage() {
                 ))}
               </div>
             </Field>
-          </section>
+          </motion.section>
 
           {/* Section 4: Goal */}
-          <section className="space-y-5">
+          <motion.section
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="space-y-5"
+          >
             <div className="flex items-center gap-4">
               <span className="font-['Bebas_Neue'] text-3xl text-accent/40">
                 04
@@ -451,7 +497,7 @@ export default function JoinPage() {
                 className={`${inputClass(!!errors.goal)} resize-none`}
               />
             </Field>
-          </section>
+          </motion.section>
 
           {/* Submit */}
           {status === "error" && (
@@ -460,16 +506,23 @@ export default function JoinPage() {
             </p>
           )}
 
-          <Button
-            onClick={handleSubmit}
-            disabled={status === "loading"}
-            className="w-full bg-accent text-black hover:bg-accent/90 rounded-none py-6 text-sm tracking-widest uppercase font-medium"
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
           >
-            {status === "loading"
-              ? "Locking you in..."
-              : "I'm Committed — Submit"}
-          </Button>
-        </div>
+            <Button
+              disabled={status === "loading"}
+              className="w-full bg-accent text-white hover:bg-accent/90 rounded-none py-6 text-sm tracking-widest uppercase font-medium"
+            >
+              {status === "loading"
+                ? "Locking you in..."
+                : "I'm Committed — Submit"}
+            </Button>
+          </motion.div>
+        </form>
       </div>
     </main>
   );

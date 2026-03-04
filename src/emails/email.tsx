@@ -1,4 +1,3 @@
-import { styles } from "./_styles";
 import {
   Html,
   Head,
@@ -14,6 +13,7 @@ import {
   Link,
 } from "@react-email/components";
 import type { ConfirmationEmailProps } from "./_types";
+import { styles } from "./_styles";
 
 export default function ConfirmationEmail({
   fullName,
@@ -126,10 +126,10 @@ export default function ConfirmationEmail({
               The 30-day accountability tracker is ready for you:
             </Text>
             <Link href={guideUrl} style={styles.button_outline}>
-              Read the Project Guide →
+              Project Guide →
             </Link>
             <Link href={trackerUrl} style={styles.button}>
-              Open Accountability Tracker →
+              Post Tracker →
             </Link>
           </Section>
 
@@ -156,3 +156,17 @@ export default function ConfirmationEmail({
     </Html>
   );
 }
+
+// ConfirmationEmail.PreviewProps = {
+//   fullName: "Alex Rivera",
+//   handle: "arivera_dev",
+//   platforms: ["X/Twitter", "LinkedIn"],
+//   pillar1: "Software Engineering",
+//   pillar2: "Digital Nomad Life",
+//   pillar3: "Fitness",
+//   frequency: "3",
+//   postingDays: ["Monday", "Wednesday", "Friday"],
+//   goal: "Build a community of 500 builders",
+//   trackerUrl: "https://example.com/tracker",
+//   guideUrl: "https://example.com/guide",
+// } as ConfirmationEmailProps;

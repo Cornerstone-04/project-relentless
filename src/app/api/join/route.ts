@@ -3,6 +3,7 @@ import { render } from "@react-email/components";
 import { Resend } from "resend";
 import ConfirmationEmail from "../../../emails/email";
 import { PROJECT_DOCS_URL, PROJECT_SHEETS_URL } from "@/lib/constants";
+import { appendSignup } from "@/lib/sheets";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -22,6 +23,19 @@ export async function POST(req: NextRequest) {
       postingDays,
       goal,
     } = body;
+
+    await appendSignup({
+      fullName,
+      email,
+      handle,
+      platforms,
+      pillar1,
+      pillar2,
+      pillar3,
+      frequency,
+      postingDays,
+      goal,
+    });
 
     // Render email to HTML
     const html = await render(
