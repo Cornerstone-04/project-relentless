@@ -1,21 +1,21 @@
 export const styles: Record<string, React.CSSProperties> = {
   body: {
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#030303",
     fontFamily: "Arial, sans-serif",
   },
   container: {
     maxWidth: "480px",
     margin: "0 auto",
-    backgroundColor: "#111111",
+    backgroundColor: "#030303",
     border: "1px solid #222222",
   },
   header: {
-    backgroundColor: "#0d0d0d",
+    backgroundColor: "#030303",
     padding: "40px 40px 32px",
     borderBottom: "1px solid #222222",
   },
   headerLabel: {
-    color: "#985eff",
+    color: "#AD46FF",
     fontSize: "10px",
     letterSpacing: "0.4em",
     margin: "0 0 16px",
@@ -36,7 +36,7 @@ export const styles: Record<string, React.CSSProperties> = {
     padding: "28px 40px",
   },
   label: {
-    color: "#985eff",
+    color: "#AD46FF",
     fontSize: "9px",
     letterSpacing: "0.4em",
     margin: "0 0 16px",
@@ -86,7 +86,7 @@ export const styles: Record<string, React.CSSProperties> = {
   },
   button: {
     display: "inline-block",
-    backgroundColor: "#985eff",
+    backgroundColor: "#AD46FF",
     color: "#FFFFFF",
     padding: "12px",
     fontSize: "11px",
@@ -95,19 +95,18 @@ export const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     fontWeight: "600",
     marginTop: "12px",
-    
   },
   button_outline: {
     display: "inline-block",
     backgroundColor: "transparent",
-    color: "#985eff",
+    color: "#AD46FF",
     padding: "12px",
     fontSize: "11px",
     letterSpacing: "0.2em",
     textTransform: "uppercase",
     textDecoration: "none",
     fontWeight: "600",
-    border: "1px solid #985eff",
+    border: "1px solid #AD46FF",
     marginRight: "20px",
   },
 };

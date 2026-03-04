@@ -71,33 +71,6 @@ function toggleClass(active: boolean) {
   }`;
 }
 
-function validate(
-  form: JoinFormData,
-): Partial<Record<keyof JoinFormData, string>> {
-  const errors: Partial<Record<keyof JoinFormData, string>> = {};
-  if (!form.fullName.trim()) errors.fullName = "Name is required";
-  if (!form.email.trim()) errors.email = "Email is required";
-  else if (!/\S+@\S+\.\S+/.test(form.email))
-    errors.email = "Enter a valid email";
-  if (!form.handle.trim()) errors.handle = "Handle is required";
-  if (form.platforms.length === 0)
-    errors.platforms = "Select at least one platform";
-  if (!form.pillar1.trim()) errors.pillar1 = "At least one pillar is required";
-  if (!form.frequency) errors.frequency = "Select your posting frequency";
-  if (form.postingDays.length === 0)
-    errors.postingDays = "Select at least one day";
-  if (!form.goal.trim()) errors.goal = "Share your 30-day goal";
-  return errors;
-}
-
-export {
-  DAYS,
-  FREQUENCIES,
-  PLATFORMS,
-  initialForm,
-  inputClass,
-  toggleClass,
-  validate,
-};
+export { DAYS, FREQUENCIES, PLATFORMS, initialForm, inputClass, toggleClass };
 
 export type JoinFormData = z.infer<typeof joinSchema>;
