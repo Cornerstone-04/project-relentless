@@ -131,7 +131,9 @@ export function JoinForm() {
               <Input
                 placeholder="@yourhandle"
                 value={form.handle}
-                onChange={(e) => update("handle", e.target.value)}
+                onChange={(e) =>
+                  update("handle", e.target.value.replace(/^@/, ""))
+                }
                 className={inputClass(!!errors.handle)}
               />
             </Field>
