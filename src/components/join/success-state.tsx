@@ -28,7 +28,7 @@ export function SuccessState({ form }: SuccessStateProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="font-['Bebas_Neue'] text-8xl text-foreground leading-none mb-6"
+          className="text-8xl text-foreground leading-none mb-6"
         >
           NOW <span className="text-accent">EXECUTE.</span>
         </motion.h1>

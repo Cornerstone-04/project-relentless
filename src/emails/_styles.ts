@@ -1,7 +1,7 @@
 export const styles: Record<string, React.CSSProperties> = {
   body: {
     backgroundColor: "#030303",
-    fontFamily: "Arial, sans-serif",
+    fontFamily: "DM Sans, sans-serif",
   },
   container: {
     maxWidth: "480px",
@@ -26,6 +26,7 @@ export const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "0.04em",
     margin: "0 0 8px",
     fontWeight: "900",
+    fontFamily: "Bebas Neue, sans-serif",
   },
   headerSub: {
     color: "#666666",

@@ -9,9 +9,10 @@ export const Hero = () => {
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: `linear-gradient(hsl(var(--foreground)) 1px, transparent 1px),
-                            linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px),
+                            linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
           backgroundSize: "60px 60px",
+          backgroundPosition: "0 0 , 30px 30px",
         }}
       />
 

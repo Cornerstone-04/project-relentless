@@ -12,7 +12,7 @@ export const Stats = () => {
       <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
         {stats.map((stat, i) => (
           <FadeIn key={stat.label} delay={i * 0.1} className="text-center">
-            <p className="font-['Bebas_Neue'] text-6xl text-accent">
+            <p className="font-bebas text-6xl text-accent">
               <Counter target={stat.value} />
             </p>
             <p className="text-muted-foreground text-xs tracking-widest uppercase mt-1">

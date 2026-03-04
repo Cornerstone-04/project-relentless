@@ -96,7 +96,7 @@ export function JoinForm() {
         <p className="text-xs tracking-[0.4em] uppercase text-accent mb-4">
           Week 0 — Planning
         </p>
-        <h1 className="font-['Bebas_Neue'] text-7xl leading-none text-foreground mb-4">
+        <h1 className="text-7xl leading-none text-foreground mb-4">
           LOCK IN YOUR <br />
           <span className="text-accent">COMMITMENT.</span>
         </h1>

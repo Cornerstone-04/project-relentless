@@ -12,7 +12,7 @@ import {
   Column,
   Link,
 } from "@react-email/components";
-import type { ConfirmationEmailProps } from "./_types";
+import type { ConfirmationEmailProps } from "@/types";
 import { styles } from "./_styles";
 
 export default function ConfirmationEmail({

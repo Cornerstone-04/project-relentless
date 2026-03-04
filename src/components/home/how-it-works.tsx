@@ -38,7 +38,7 @@ export const HowItWorks = () => {
               <div
                 className={`p-8 h-full ${i < pillars.length - 1 ? "border-b md:border-b-0 md:border-r border-border" : ""}`}
               >
-                <p className="font-['Bebas_Neue'] text-5xl text-accent/30 mb-4">
+                <p className="font-bebas text-5xl text-accent/30 mb-4">
                   {pillar.number}
                 </p>
                 <h3 className="text-2xl text-foreground mb-3">

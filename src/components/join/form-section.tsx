@@ -15,10 +15,10 @@ export function FormSection({
       className="space-y-5"
     >
       <div className="flex items-center gap-4">
-        <span className="font-['Bebas_Neue'] text-3xl text-accent/40">
+        <span className="font-bebas text-3xl text-accent/40">
           {number}
         </span>
-        <h2 className="font-['Bebas_Neue'] text-2xl tracking-wide">{title}</h2>
+        <h2 className="text-2xl tracking-wide">{title}</h2>
         <div className="flex-1 h-px bg-border" />
       </div>
       {children}
