@@ -1,4 +1,27 @@
-import type { JoinFormData } from "@/types";
+import {
+  FaInstagram,
+  FaTiktok,
+  FaYoutube,
+  FaXTwitter,
+  FaLinkedin,
+} from "react-icons/fa6";
+import { FiGlobe } from "react-icons/fi";
+
+import type { Platform } from "@/types";
+import z from "zod";
+
+export const joinSchema = z.object({
+  fullName: z.string().min(1, "Name is required"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email"),
+  handle: z.string().min(1, "Handle is required"),
+  platforms: z.array(z.string()).min(1, "Select at least one platform"),
+  pillar1: z.string().min(1, "At least one pillar is required"),
+  pillar2: z.string().optional(),
+  pillar3: z.string().optional(),
+  frequency: z.string().min(1, "Select your posting frequency"),
+  postingDays: z.array(z.string()).min(1, "Select at least one day"),
+  goal: z.string().min(1, "Share your 30-day goal"),
+});
 
 // constants
 const DAYS = [
@@ -11,7 +34,14 @@ const DAYS = [
   "Sunday",
 ];
 const FREQUENCIES = ["3 times", "4 times", "5 times", "6–7 times"];
-const PLATFORMS = ["Instagram", "TikTok", "YouTube", "X", "LinkedIn", "Other"];
+const PLATFORMS: Platform[] = [
+  { label: "Instagram", icon: FaInstagram },
+  { label: "TikTok", icon: FaTiktok },
+  { label: "YouTube", icon: FaYoutube },
+  { label: "X", icon: FaXTwitter },
+  { label: "LinkedIn", icon: FaLinkedin },
+  { label: "Other", icon: FiGlobe },
+];
 
 const initialForm: JoinFormData = {
   fullName: "",
@@ -34,7 +64,7 @@ function inputClass(hasError: boolean) {
 }
 
 function toggleClass(active: boolean) {
-  return `px-3 py-2 text-xs tracking-widest uppercase border transition-colors ${
+  return `flex flex-col items-center px-3 py-2 text-xs tracking-widest uppercase border transition-colors ${
     active
       ? "bg-accent text-white border-accent font-medium"
       : "bg-transparent text-muted-foreground border-border hover:border-foreground/40"
@@ -69,3 +99,5 @@ export {
   toggleClass,
   validate,
 };
+
+export type JoinFormData = z.infer<typeof joinSchema>;

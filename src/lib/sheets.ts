@@ -45,3 +45,15 @@ export async function appendSignup(data: {
     },
   });
 }
+
+export async function isAlreadySignedUp(email: string): Promise<boolean> {
+  const sheets = google.sheets({ version: "v4", auth });
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: "Signups!C:C",
+  });
+
+  const emails = res.data.values?.flat() ?? [];
+  return emails.includes(email);
+}

@@ -1,14 +1,22 @@
-export type JoinFormData = {
-  fullName: string;
-  email: string;
-  handle: string;
-  platforms: string[];
-  pillar1: string;
-  pillar2: string;
-  pillar3: string;
-  frequency: string;
-  postingDays: string[];
-  goal: string;
+import type { IconType } from "react-icons";
+
+// export type JoinFormData = {
+//   fullName: string;
+//   email: string;
+//   handle: string;
+//   platforms: string[];
+//   pillar1: string;
+//   pillar2: string;
+//   pillar3: string;
+//   frequency: string;
+//   postingDays: string[];
+//   goal: string;
+// };
+//
+
+export type Platform = {
+  label: string;
+  icon: IconType;
 };
 
 export type PillarInfoProps = {

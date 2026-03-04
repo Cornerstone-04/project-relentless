@@ -9,16 +9,28 @@ import { FormSection } from "./form-section";
 import { PillarInfo } from "./pillar-info";
 import { SuccessState } from "./success-state";
 import { Field } from "./field";
-import { validate, inputClass, toggleClass, DAYS, FREQUENCIES, PLATFORMS, initialForm } from "@/lib/join";
-import type { JoinFormData } from "@/types";
+import {
+  inputClass,
+  toggleClass,
+  DAYS,
+  FREQUENCIES,
+  PLATFORMS,
+  initialForm,
+  type JoinFormData,
+  joinSchema,
+} from "@/lib/join";
 import api from "@/app/api/axios";
-
+import axios from "axios";
 
 export function JoinForm() {
   const [form, setForm] = useState<JoinFormData>(initialForm);
   const [showPillarInfo, setShowPillarInfo] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof JoinFormData, string>>>({});
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof JoinFormData, string>>
+  >({});
+  const [status, setStatus] = useState<
+    "duplicate" | "idle" | "loading" | "success" | "error"
+  >("idle");
 
   function update(field: keyof JoinFormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -45,17 +57,28 @@ export function JoinForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const newErrors = validate(form);
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+
+    const result = joinSchema.safeParse(form);
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof JoinFormData, string>> = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof JoinFormData;
+        if (!fieldErrors[field]) fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
       return;
     }
+
     setStatus("loading");
     try {
-      await api.post("/join", form);
+      await api.post("/join", result.data);
       setStatus("success");
-    } catch {
-      setStatus("error");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 409) {
+        setStatus("duplicate");
+      } else {
+        setStatus("error");
+      }
     }
   }
 
@@ -63,7 +86,6 @@ export function JoinForm() {
 
   return (
     <div className="max-w-2xl mx-auto px-6 pt-36 pb-24">
-
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -79,13 +101,12 @@ export function JoinForm() {
           <span className="text-accent">COMMITMENT.</span>
         </h1>
         <p className="text-muted-foreground font-light leading-relaxed">
-          Complete this before posting begins. This is your plan for the next
-          30 days. Be specific — vague goals produce vague results.
+          Complete this before posting begins. This is your plan for the next 30
+          days. Be specific — vague goals produce vague results.
         </p>
       </motion.div>
 
       <form className="space-y-10" onSubmit={handleSubmit}>
-
         {/* Section 1: Identity */}
         <FormSection number="01" title="Who Are You" delay={0.2}>
           <Field label="Full Name" error={errors.fullName} required>
@@ -114,16 +135,21 @@ export function JoinForm() {
                 className={inputClass(!!errors.handle)}
               />
             </Field>
-            <Field label="Platform(s)" error={errors.platforms as string} required>
+            <Field
+              label="Platform(s)"
+              error={errors.platforms as string}
+              required
+            >
               <div className="grid grid-cols-3 gap-2">
-                {PLATFORMS.map((p) => (
+                {PLATFORMS.map(({ label, icon: Icon }) => (
                   <button
-                    key={p}
+                    key={label}
                     type="button"
-                    onClick={() => togglePlatform(p)}
-                    className={toggleClass(form.platforms.includes(p))}
+                    onClick={() => togglePlatform(label)}
+                    className={toggleClass(form.platforms.includes(label))}
                   >
-                    {p}
+                    <Icon className="mx-auto mb-1 text-base" />
+                    <span>{label}</span>
                   </button>
                 ))}
               </div>
@@ -134,7 +160,8 @@ export function JoinForm() {
         {/* Section 2: Content Pillars */}
         <FormSection number="02" title="Your Content Pillars" delay={0.3}>
           <p className="text-muted-foreground text-sm font-light -mt-2">
-            Max 3. Every post must fit into one of these buckets. Keep them specific.
+            Max 3. Every post must fit into one of these buckets. Keep them
+            specific.
           </p>
           <PillarInfo
             showPillarInfo={showPillarInfo}
@@ -182,7 +209,11 @@ export function JoinForm() {
               ))}
             </div>
           </Field>
-          <Field label="Posting days" error={errors.postingDays as string} required>
+          <Field
+            label="Posting days"
+            error={errors.postingDays as string}
+            required
+          >
             <div className="grid grid-cols-4 gap-2">
               {DAYS.map((day) => (
                 <button
@@ -200,7 +231,11 @@ export function JoinForm() {
 
         {/* Section 4: Goal */}
         <FormSection number="04" title="Your 30-Day Goal" delay={0.5}>
-          <Field label="What do you want to achieve?" error={errors.goal} required>
+          <Field
+            label="What do you want to achieve?"
+            error={errors.goal}
+            required
+          >
             <Textarea
               placeholder="Be specific. e.g. Reach 500 followers, post 15 Reels, grow engagement by 20%"
               value={form.goal}
@@ -218,6 +253,13 @@ export function JoinForm() {
           </p>
         )}
 
+        {status === "duplicate" && (
+          <p className="text-yellow-500 text-sm text-center">
+            You&apos;ve already signed up! Check your inbox for the confirmation
+            email.
+          </p>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -229,10 +271,11 @@ export function JoinForm() {
             disabled={status === "loading"}
             className="w-full bg-accent text-white hover:bg-accent/90 rounded-none py-6 text-sm tracking-widest uppercase font-medium"
           >
-            {status === "loading" ? "Locking you in..." : "I'm Committed — Submit"}
+            {status === "loading"
+              ? "Locking you in..."
+              : "I'm Committed — Submit"}
           </Button>
         </motion.div>
-
       </form>
     </div>
   );
