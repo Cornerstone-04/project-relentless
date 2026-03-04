@@ -10,3 +10,15 @@ export type JoinFormData = {
   postingDays: string[];
   goal: string;
 };
+
+export type PillarInfoProps = {
+  showPillarInfo: boolean;
+  setShowPillarInfo: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export type FormSectionProps = {
+  number: string;
+  title: string;
+  children: React.ReactNode;
+  delay?: number;
+};
