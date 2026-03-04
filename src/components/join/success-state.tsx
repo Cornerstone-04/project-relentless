@@ -1,4 +1,4 @@
-import type { JoinFormData } from "@/types";
+import type { JoinFormData } from "@/lib/join";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "../ui/button";
