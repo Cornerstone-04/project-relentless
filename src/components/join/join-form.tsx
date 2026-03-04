@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ import {
 } from "@/lib/join";
 import api from "@/app/api/axios";
 import axios from "axios";
+import { SpotsFull } from "./spots-full";
 
 export function JoinForm() {
   const [form, setForm] = useState<JoinFormData>(initialForm);
@@ -29,8 +30,18 @@ export function JoinForm() {
     Partial<Record<keyof JoinFormData, string>>
   >({});
   const [status, setStatus] = useState<
-    "duplicate" | "idle" | "loading" | "success" | "error"
+    "idle" | "loading" | "success" | "error" | "duplicate" | "full"
   >("idle");
+
+  useEffect(() => {
+    async function checkSpots() {
+      try {
+        const res = await api.get("/spots");
+        if (res.data.full) setStatus("full");
+      } catch {}
+    }
+    checkSpots();
+  }, []);
 
   function update(field: keyof JoinFormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -76,6 +87,8 @@ export function JoinForm() {
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response?.status === 409) {
         setStatus("duplicate");
+      } else if (axios.isAxiosError(err) && err.response?.status === 410) {
+        setStatus("full");
       } else {
         setStatus("error");
       }
@@ -83,6 +96,7 @@ export function JoinForm() {
   }
 
   if (status === "success") return <SuccessState form={form} />;
+  if (status === "full") return <SpotsFull />;
 
   return (
     <div className="max-w-2xl mx-auto px-6 pt-36 pb-24">
@@ -254,7 +268,7 @@ export function JoinForm() {
             Something went wrong. Please try again.
           </p>
         )}
-
+        {/*Duplicate signup*/}
         {status === "duplicate" && (
           <p className="text-yellow-500 text-sm text-center">
             You&apos;ve already signed up! Check your inbox for the confirmation

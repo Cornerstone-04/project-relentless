@@ -8,7 +8,7 @@ import {
   RESEND_API_KEY,
 } from "@/lib/constants";
 import { joinSchema } from "@/lib/join";
-import { appendSignup, isAlreadySignedUp } from "@/lib/sheets";
+import { appendSignup, getSignupCount, isAlreadySignedUp } from "@/lib/sheets";
 import { ratelimit } from "@/lib/ratelimit";
 
 const resend = new Resend(RESEND_API_KEY);
@@ -50,6 +50,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "You've already signed up!" },
         { status: 409 },
+      );
+    }
+
+    const count = await getSignupCount();
+    if (count >= 10) {
+      return NextResponse.json(
+        { error: "Sorry, all spots are filled." },
+        { status: 410 },
       );
     }
 

@@ -57,3 +57,16 @@ export async function isAlreadySignedUp(email: string): Promise<boolean> {
   const emails = res.data.values?.flat() ?? [];
   return emails.includes(email);
 }
+
+export async function getSignupCount(): Promise<number> {
+  const sheets = google.sheets({ version: "v4", auth });
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID,
+    range: "Signups!A:A",
+  });
+
+  // Subtract 1 to exclude the header row
+  const rows = res.data.values ?? [];
+  return Math.max(0, rows.length - 1);
+}
