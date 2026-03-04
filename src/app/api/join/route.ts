@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     );
 
     await resend.emails.send({
-      from: "Project Relentless <onboarding@resend.dev>",
+      from: "Project Relentless <hello@projectrelentless.live>",
       to: email,
       subject: "You're locked in. Now execute. 🔒",
       html,
