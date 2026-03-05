@@ -10,11 +10,16 @@ import { FiGlobe } from "react-icons/fi";
 import type { Platform } from "@/types";
 import z from "zod";
 
+// form schema
+const accountSchema = z.object({
+  handle: z.string().min(1, "Handle is required"),
+  platforms: z.array(z.string()).min(1, "Select at least one platform"),
+});
+
 export const joinSchema = z.object({
   fullName: z.string().min(1, "Name is required"),
   email: z.string().min(1, "Email is required").email("Enter a valid email"),
-  handle: z.string().min(1, "Handle is required"),
-  platforms: z.array(z.string()).min(1, "Select at least one platform"),
+  accounts: z.array(accountSchema).min(1).max(3),
   pillar1: z.string().min(1, "At least one pillar is required"),
   pillar2: z.string().optional(),
   pillar3: z.string().optional(),
@@ -22,6 +27,8 @@ export const joinSchema = z.object({
   postingDays: z.array(z.string()).min(1, "Select at least one day"),
   goal: z.string().min(1, "Share your 30-day goal"),
 });
+
+export type JoinFormData = z.infer<typeof joinSchema>;
 
 // constants
 const DAYS = [
@@ -46,8 +53,7 @@ const PLATFORMS: Platform[] = [
 const initialForm: JoinFormData = {
   fullName: "",
   email: "",
-  handle: "",
-  platforms: [],
+  accounts: [{ handle: "", platforms: [] }],
   pillar1: "",
   pillar2: "",
   pillar3: "",
@@ -71,6 +77,12 @@ function toggleClass(active: boolean) {
   }`;
 }
 
-export { DAYS, FREQUENCIES, PLATFORMS, initialForm, inputClass, toggleClass };
-
-export type JoinFormData = z.infer<typeof joinSchema>;
+export {
+  DAYS,
+  FREQUENCIES,
+  PLATFORMS,
+  initialForm,
+  inputClass,
+  toggleClass,
+  accountSchema,
+};

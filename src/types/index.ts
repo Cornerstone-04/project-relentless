@@ -5,6 +5,11 @@ export type Platform = {
   icon: IconType;
 };
 
+export type Account = {
+  handle: string;
+  platforms: string[];
+};
+
 export type PillarInfoProps = {
   showPillarInfo: boolean;
   setShowPillarInfo: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,8 +24,7 @@ export type FormSectionProps = {
 
 export type ConfirmationEmailProps = {
   fullName: string;
-  handle: string;
-  platforms: string[];
+  accounts: Account[];
   pillar1: string;
   pillar2?: string;
   pillar3?: string;

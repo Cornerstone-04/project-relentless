@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,21 +15,28 @@ import {
   toggleClass,
   DAYS,
   FREQUENCIES,
-  PLATFORMS,
   initialForm,
   type JoinFormData,
   joinSchema,
 } from "@/lib/join";
 import api from "@/app/api/axios";
-import axios from "axios";
 import { SpotsFull } from "./spots-full";
+import { AccountFields } from "./account-fields";
+
+type AccountError = Partial<
+  Record<keyof JoinFormData["accounts"][number], string>
+>;
+
+type JoinFormErrors = Partial<
+  Omit<Record<keyof JoinFormData, string>, "accounts">
+> & {
+  accounts?: AccountError[];
+};
 
 export function JoinForm() {
   const [form, setForm] = useState<JoinFormData>(initialForm);
   const [showPillarInfo, setShowPillarInfo] = useState(false);
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof JoinFormData, string>>
-  >({});
+  const [errors, setErrors] = useState<JoinFormErrors>({});
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error" | "duplicate" | "full"
   >("idle");
@@ -38,14 +46,63 @@ export function JoinForm() {
       try {
         const res = await api.get("/spots");
         if (res.data.full) setStatus("full");
-      } catch {}
+      } catch {
+        // ignore
+      }
     }
     checkSpots();
   }, []);
 
   function update(field: keyof JoinFormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+
+    // Clear top-level errors when field changes
+    if (field !== "accounts") {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  }
+
+  function updateAccount(
+    index: number,
+    updated: JoinFormData["accounts"][number],
+  ) {
+    setForm((prev) => {
+      const accounts = [...prev.accounts];
+      accounts[index] = updated;
+      return { ...prev, accounts };
+    });
+
+    // Clear nested account errors when account changes
+    setErrors((prev) => {
+      if (!prev.accounts?.[index]) return prev;
+      const nextAccounts = [...(prev.accounts ?? [])];
+      nextAccounts[index] = {};
+      return { ...prev, accounts: nextAccounts };
+    });
+  }
+
+  function addAccount() {
+    if (form.accounts.length >= 3) return;
+    setForm((prev) => ({
+      ...prev,
+      accounts: [...prev.accounts, { handle: "", platforms: [] }],
+    }));
+  }
+
+  function removeAccount(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      accounts: prev.accounts.filter((_, i) => i !== index),
+    }));
+
+    // Keep errors aligned with accounts indices
+    setErrors((prev) => {
+      if (!prev.accounts) return prev;
+      return {
+        ...prev,
+        accounts: prev.accounts.filter((_, i) => i !== index),
+      };
+    });
   }
 
   function toggleDay(day: string) {
@@ -55,15 +112,8 @@ export function JoinForm() {
         ? prev.postingDays.filter((d) => d !== day)
         : [...prev.postingDays, day],
     }));
-  }
 
-  function togglePlatform(platform: string) {
-    setForm((prev) => ({
-      ...prev,
-      platforms: prev.platforms.includes(platform)
-        ? prev.platforms.filter((p) => p !== platform)
-        : [...prev.platforms, platform],
-    }));
+    setErrors((prev) => ({ ...prev, postingDays: "" }));
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -71,11 +121,30 @@ export function JoinForm() {
 
     const result = joinSchema.safeParse(form);
     if (!result.success) {
-      const fieldErrors: Partial<Record<keyof JoinFormData, string>> = {};
+      const fieldErrors: JoinFormErrors = {};
+
       result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as keyof JoinFormData;
-        if (!fieldErrors[field]) fieldErrors[field] = issue.message;
+        const [root, index, nested] = issue.path;
+
+        // Nested: accounts[0].handle / accounts[0].platforms
+        if (
+          root === "accounts" &&
+          typeof index === "number" &&
+          typeof nested === "string"
+        ) {
+          fieldErrors.accounts ??= [];
+          fieldErrors.accounts[index] ??= {};
+
+          const key = nested as keyof JoinFormData["accounts"][number];
+          fieldErrors.accounts[index][key] ??= issue.message;
+          return;
+        }
+
+        // Top-level fields
+        const field = root as Exclude<keyof JoinFormData, "accounts">;
+        fieldErrors[field] ??= issue.message;
       });
+
       setErrors(fieldErrors);
       return;
     }
@@ -131,6 +200,7 @@ export function JoinForm() {
               className={inputClass(!!errors.fullName)}
             />
           </Field>
+
           <Field label="Email Address" error={errors.email} required>
             <Input
               type="email"
@@ -140,36 +210,28 @@ export function JoinForm() {
               className={inputClass(!!errors.email)}
             />
           </Field>
-          <div className="grid md:grid-cols-2 gap-4">
-            <Field label="Social Handle" error={errors.handle} required>
-              <Input
-                placeholder="@yourhandle"
-                value={form.handle}
-                onChange={(e) =>
-                  update("handle", e.target.value.replace(/^@/, ""))
-                }
-                className={inputClass(!!errors.handle)}
+
+          <div className="space-y-3">
+            {form.accounts.map((account, i) => (
+              <AccountFields
+                key={i}
+                index={i}
+                account={account}
+                error={errors.accounts?.[i]}
+                onChange={updateAccount}
+                onRemove={form.accounts.length > 1 ? removeAccount : undefined}
               />
-            </Field>
-            <Field
-              label="Platform(s)"
-              error={errors.platforms as string}
-              required
-            >
-              <div className="grid grid-cols-3 gap-2">
-                {PLATFORMS.map(({ label, icon: Icon }) => (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => togglePlatform(label)}
-                    className={toggleClass(form.platforms.includes(label))}
-                  >
-                    <Icon className="mx-auto mb-1 text-base" />
-                    <span>{label}</span>
-                  </button>
-                ))}
-              </div>
-            </Field>
+            ))}
+
+            {form.accounts.length < 3 && (
+              <button
+                type="button"
+                onClick={addAccount}
+                className="w-full border border-dashed border-border py-3 text-xs tracking-widest uppercase text-muted-foreground hover:border-accent hover:text-accent transition-colors"
+              >
+                + Add another account
+              </button>
+            )}
           </div>
         </FormSection>
 
@@ -183,6 +245,7 @@ export function JoinForm() {
             showPillarInfo={showPillarInfo}
             setShowPillarInfo={setShowPillarInfo}
           />
+
           <Field label="Pillar 1" error={errors.pillar1} required>
             <Input
               placeholder="e.g. Editing Tutorials"
@@ -191,20 +254,22 @@ export function JoinForm() {
               className={inputClass(!!errors.pillar1)}
             />
           </Field>
-          <Field label="Pillar 2 (optional)">
+
+          <Field label="Pillar 2 (optional)" error={errors.pillar2}>
             <Input
               placeholder="e.g. Client Projects"
               value={form.pillar2}
               onChange={(e) => update("pillar2", e.target.value)}
-              className={inputClass(false)}
+              className={inputClass(!!errors.pillar2)}
             />
           </Field>
-          <Field label="Pillar 3 (optional)">
+
+          <Field label="Pillar 3 (optional)" error={errors.pillar3}>
             <Input
               placeholder="e.g. Content Strategy Tips"
               value={form.pillar3}
               onChange={(e) => update("pillar3", e.target.value)}
-              className={inputClass(false)}
+              className={inputClass(!!errors.pillar3)}
             />
           </Field>
         </FormSection>
@@ -225,11 +290,8 @@ export function JoinForm() {
               ))}
             </div>
           </Field>
-          <Field
-            label="Posting days"
-            error={errors.postingDays as string}
-            required
-          >
+
+          <Field label="Posting days" error={errors.postingDays} required>
             <div className="grid grid-cols-4 gap-2">
               {DAYS.map((day) => (
                 <button
@@ -268,7 +330,7 @@ export function JoinForm() {
             Something went wrong. Please try again.
           </p>
         )}
-        {/*Duplicate signup*/}
+
         {status === "duplicate" && (
           <p className="text-yellow-500 text-sm text-center">
             You&apos;ve already signed up! Check your inbox for the confirmation

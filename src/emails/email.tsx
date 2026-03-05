@@ -14,11 +14,11 @@ import {
 } from "@react-email/components";
 import type { ConfirmationEmailProps } from "@/types";
 import { styles } from "./_styles";
+import { WHATSAPP_GROUP_URL } from "@/lib/constants";
 
 export default function ConfirmationEmail({
   fullName,
-  handle,
-  platforms,
+  accounts,
   pillar1,
   pillar2,
   pillar3,
@@ -61,12 +61,16 @@ export default function ConfirmationEmail({
 
             <Row style={styles.row}>
               <Column style={styles.col_left}>
-                <Text style={styles.field_label}>Handle</Text>
+                <Text style={styles.field_label}>
+                  {accounts.length > 1 ? "Accounts" : "Account"}
+                </Text>
               </Column>
               <Column style={styles.col_right}>
-                <Text style={styles.field_value}>
-                  @{handle} · {platforms.join(", ")}
-                </Text>
+                {accounts.map((a, i) => (
+                  <Text key={i} style={styles.field_value}>
+                    @{a.handle} · {a.platforms.join(", ")}
+                  </Text>
+                ))}
               </Column>
             </Row>
 
@@ -125,11 +129,23 @@ export default function ConfirmationEmail({
             <Text style={styles.body_text}>
               The 30-day accountability tracker is ready for you:
             </Text>
+
             <Link href={guideUrl} style={styles.button_outline}>
               Project Guide →
             </Link>
+
             <Link href={trackerUrl} style={styles.button}>
               Post Tracker →
+            </Link>
+
+            {/* WhatsApp Group */}
+            <Text style={{ ...styles.body_text, marginTop: "20px" }}>
+              Join the accountability group. This is where updates, reminders,
+              and daily execution check-ins happen.
+            </Text>
+
+            <Link href={WHATSAPP_GROUP_URL} style={styles.whatsapp_button}>
+              Join WhatsApp Group →
             </Link>
           </Section>
 
@@ -159,8 +175,7 @@ export default function ConfirmationEmail({
 
 // ConfirmationEmail.PreviewProps = {
 //   fullName: "Alex Rivera",
-//   handle: "arivera_dev",
-//   platforms: ["X/Twitter", "LinkedIn"],
+//   accounts: [{ handle: "arivera_dev", platforms: ["X", "LinkedIn"] }],
 //   pillar1: "Software Engineering",
 //   pillar2: "Digital Nomad Life",
 //   pillar3: "Fitness",

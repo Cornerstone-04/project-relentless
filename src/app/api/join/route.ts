@@ -35,8 +35,7 @@ export async function POST(req: NextRequest) {
     const {
       fullName,
       email,
-      handle,
-      platforms,
+      accounts,
       pillar1,
       pillar2,
       pillar3,
@@ -64,8 +63,7 @@ export async function POST(req: NextRequest) {
     await appendSignup({
       fullName,
       email,
-      handle,
-      platforms,
+      accounts,
       pillar1,
       pillar2,
       pillar3,
@@ -74,6 +72,10 @@ export async function POST(req: NextRequest) {
       goal,
     });
 
+    const handlesSummary = accounts
+      .map((a) => `@${a.handle} (${a.platforms.join(", ")})`)
+      .join("<br/>");
+
     await resend.emails.send({
       from: "Project Relentless <hello@projectrelentless.live>",
       to: ["fortunecornerstone@gmail.com", "boluwatifeajolore@gmail.com"],
@@ -81,7 +83,7 @@ export async function POST(req: NextRequest) {
       html: `
         <p><strong>${fullName}</strong> just signed up.</p>
         <p>Email: ${email}</p>
-        <p>Handle: @${handle} on ${platforms.join(", ")}</p>
+        <p>Account(s): ${handlesSummary}</p>
         <p>Pillars: ${[pillar1, pillar2, pillar3].filter(Boolean).join(", ")}</p>
         <p>Frequency: ${frequency} per week</p>
         <p>Posting days: ${postingDays.join(", ")}</p>
@@ -93,8 +95,7 @@ export async function POST(req: NextRequest) {
     const html = await render(
       ConfirmationEmail({
         fullName,
-        handle,
-        platforms,
+        accounts,
         pillar1,
         pillar2,
         pillar3,

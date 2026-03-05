@@ -56,9 +56,15 @@ export function SuccessState({ form }: SuccessStateProps) {
               <span className="text-foreground">{form.fullName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Handle</span>
-              <span className="text-foreground">
-                @{form.handle} · {form.platforms.join(", ")}
+              <span className="text-muted-foreground">
+                {form.accounts.length > 1 ? "Accounts" : "Account"}
+              </span>
+              <span className="text-foreground text-right space-y-1">
+                {form.accounts.map((a, i) => (
+                  <span key={i} className="block">
+                    @{a.handle} · {a.platforms.join(", ")}
+                  </span>
+                ))}
               </span>
             </div>
             <div className="flex justify-between">

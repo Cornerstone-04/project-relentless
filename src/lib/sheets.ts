@@ -7,12 +7,10 @@ const auth = new google.auth.GoogleAuth({
   },
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
-
 export async function appendSignup(data: {
   fullName: string;
   email: string;
-  handle: string;
-  platforms: string[];
+  accounts: { handle: string; platforms: string[] }[];
   pillar1: string;
   pillar2?: string;
   pillar3?: string;
@@ -32,8 +30,12 @@ export async function appendSignup(data: {
           new Date().toLocaleString(),
           data.fullName,
           data.email,
-          `@${data.handle}`,
-          data.platforms.join(", "),
+          data.accounts
+            .map(
+              (a, i) =>
+                `Account ${i + 1}: @${a.handle} (${a.platforms.join(", ")})`,
+            )
+            .join(" | "),
           data.pillar1,
           data.pillar2 ?? "",
           data.pillar3 ?? "",

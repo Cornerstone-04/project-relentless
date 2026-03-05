@@ -110,4 +110,18 @@ export const styles: Record<string, React.CSSProperties> = {
     border: "1px solid #AD46FF",
     marginRight: "20px",
   },
+  whatsapp_button: {
+    display: "block",
+    backgroundColor: "#25D366",
+    color: "#ffffff",
+    padding: "12px",
+    fontSize: "11px",
+    letterSpacing: "0.2em",
+    textTransform: "uppercase",
+    textDecoration: "none",
+    fontWeight: "600",
+    marginTop: "16px",
+    textAlign: "center",
+    cursor: "pointer",
+  },
 };
