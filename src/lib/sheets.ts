@@ -22,7 +22,7 @@ export async function appendSignup(data: {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: "Signups!A1",
+    range: "Signups",
     valueInputOption: "USER_ENTERED",
     requestBody: {
       values: [
