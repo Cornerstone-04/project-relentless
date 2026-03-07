@@ -28,7 +28,7 @@ export async function appendSignup(data: {
     requestBody: {
       values: [
         [
-          new Date().toLocaleString(),
+          new Date().toISOString(),
           data.fullName,
           data.email,
           data.accounts
