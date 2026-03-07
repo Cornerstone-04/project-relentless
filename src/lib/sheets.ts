@@ -19,6 +19,11 @@ export async function appendSignup(data: {
   goal: string;
 }) {
   const sheets = google.sheets({ version: "v4", auth });
+  const timestamp = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "Africa/Lagos",
+  }).format(new Date());
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
@@ -28,7 +33,7 @@ export async function appendSignup(data: {
     requestBody: {
       values: [
         [
-          new Date().toISOString(),
+          timestamp,
           data.fullName,
           data.email,
           data.accounts
