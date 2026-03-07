@@ -14,22 +14,17 @@ import {
 } from "@react-email/components";
 import type { ConfirmationEmailProps } from "@/types";
 import { styles } from "./_styles";
-import { WHATSAPP_GROUP_URL } from "@/lib/constants";
 
 export default function ConfirmationEmail({
   fullName,
   accounts,
-  pillar1,
-  pillar2,
-  pillar3,
   frequency,
   postingDays,
   goal,
   trackerUrl,
   guideUrl,
+  whatsappUrl,
 }: ConfirmationEmailProps) {
-  const pillars = [pillar1, pillar2, pillar3].filter(Boolean);
-
   return (
     <Html>
       <Head />
@@ -67,24 +62,39 @@ export default function ConfirmationEmail({
               </Column>
               <Column style={styles.col_right}>
                 {accounts.map((a, i) => (
-                  <Text key={i} style={styles.field_value}>
-                    @{a.handle} · {a.platforms.join(", ")}
-                  </Text>
-                ))}
-              </Column>
-            </Row>
-
-            <Hr style={styles.hr} />
-
-            <Row style={styles.row}>
-              <Column style={styles.col_left}>
-                <Text style={styles.field_label}>Content Pillars</Text>
-              </Column>
-              <Column style={styles.col_right}>
-                {pillars.map((p) => (
-                  <Text key={p} style={styles.field_value}>
-                    {p}
-                  </Text>
+                  <div key={i}>
+                    <Row style={styles.row}>
+                      <Column style={styles.col_left}>
+                        <Text style={styles.field_label}>Account {i + 1}</Text>
+                      </Column>
+                      <Column style={styles.col_right}>
+                        <Text style={styles.field_value}>@{a.handle}</Text>
+                      </Column>
+                    </Row>
+                    <Row style={styles.row}>
+                      <Column style={styles.col_left}>
+                        <Text style={styles.field_label}>Platforms</Text>
+                      </Column>
+                      <Column style={styles.col_right}>
+                        <Text style={styles.field_value}>
+                          {a.platforms.join(", ")}
+                        </Text>
+                      </Column>
+                    </Row>
+                    <Row style={styles.row}>
+                      <Column style={styles.col_left}>
+                        <Text style={styles.field_label}>Pillars</Text>
+                      </Column>
+                      <Column style={styles.col_right}>
+                        <Text style={styles.field_value}>
+                          {[a.pillar1, a.pillar2, a.pillar3]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </Text>
+                      </Column>
+                    </Row>
+                    {i < accounts.length - 1 && <Hr style={styles.hr} />}
+                  </div>
                 ))}
               </Column>
             </Row>
@@ -144,7 +154,7 @@ export default function ConfirmationEmail({
               and daily execution check-ins happen.
             </Text>
 
-            <Link href={WHATSAPP_GROUP_URL} style={styles.whatsapp_button}>
+            <Link href={whatsappUrl} style={styles.whatsapp_button}>
               Join WhatsApp Group →
             </Link>
           </Section>
@@ -173,15 +183,4 @@ export default function ConfirmationEmail({
   );
 }
 
-// ConfirmationEmail.PreviewProps = {
-//   fullName: "Alex Rivera",
-//   accounts: [{ handle: "arivera_dev", platforms: ["X", "LinkedIn"] }],
-//   pillar1: "Software Engineering",
-//   pillar2: "Digital Nomad Life",
-//   pillar3: "Fitness",
-//   frequency: "3",
-//   postingDays: ["Monday", "Wednesday", "Friday"],
-//   goal: "Build a community of 500 builders",
-//   trackerUrl: "https://example.com/tracker",
-//   guideUrl: "https://example.com/guide",
-// } as ConfirmationEmailProps;
+// ConfirmationEmail.PreviewProps = PREVIEW_DETAILS as ConfirmationEmailProps;

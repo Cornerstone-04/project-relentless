@@ -14,21 +14,21 @@ import z from "zod";
 const accountSchema = z.object({
   handle: z.string().min(1, "Handle is required"),
   platforms: z.array(z.string()).min(1, "Select at least one platform"),
-});
-
-export const joinSchema = z.object({
-  fullName: z.string().min(1, "Name is required"),
-  email: z.string().min(1, "Email is required").email("Enter a valid email"),
-  accounts: z.array(accountSchema).min(1).max(3),
   pillar1: z.string().min(1, "At least one pillar is required"),
   pillar2: z.string().optional(),
   pillar3: z.string().optional(),
+});
+
+const joinSchema = z.object({
+  fullName: z.string().min(1, "Name is required"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email"),
+  accounts: z.array(accountSchema).min(1).max(3),
   frequency: z.string().min(1, "Select your posting frequency"),
   postingDays: z.array(z.string()).min(1, "Select at least one day"),
   goal: z.string().min(1, "Share your 30-day goal"),
 });
 
-export type JoinFormData = z.infer<typeof joinSchema>;
+type JoinFormData = z.infer<typeof joinSchema>;
 
 // constants
 const DAYS = [
@@ -53,10 +53,9 @@ const PLATFORMS: Platform[] = [
 const initialForm: JoinFormData = {
   fullName: "",
   email: "",
-  accounts: [{ handle: "", platforms: [] }],
-  pillar1: "",
-  pillar2: "",
-  pillar3: "",
+  accounts: [
+    { handle: "", platforms: [], pillar1: "", pillar2: "", pillar3: "" },
+  ],
   frequency: "",
   postingDays: [],
   goal: "",
@@ -85,4 +84,6 @@ export {
   inputClass,
   toggleClass,
   accountSchema,
+  joinSchema,
+  type JoinFormData,
 };

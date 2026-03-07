@@ -1,36 +1,45 @@
 import type { IconType } from "react-icons";
 
-export type Platform = {
+type Platform = {
   label: string;
   icon: IconType;
 };
 
-export type Account = {
+type Account = {
   handle: string;
   platforms: string[];
+  pillar1: string;
+  pillar2?: string;
+  pillar3?: string;
 };
 
-export type PillarInfoProps = {
+type PillarInfoProps = {
   showPillarInfo: boolean;
   setShowPillarInfo: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export type FormSectionProps = {
+type FormSectionProps = {
   number: string;
   title: string;
   children: React.ReactNode;
   delay?: number;
 };
 
-export type ConfirmationEmailProps = {
+type ConfirmationEmailProps = {
   fullName: string;
   accounts: Account[];
-  pillar1: string;
-  pillar2?: string;
-  pillar3?: string;
   frequency: string;
   postingDays: string[];
   goal: string;
   trackerUrl: string;
   guideUrl: string;
+  whatsappUrl: string;
+};
+
+export type {
+  Account,
+  ConfirmationEmailProps,
+  FormSectionProps,
+  PillarInfoProps,
+  Platform,
 };

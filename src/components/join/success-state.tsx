@@ -67,14 +67,28 @@ export function SuccessState({ form }: SuccessStateProps) {
                 ))}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Pillars</span>
-              <span className="text-foreground text-right">
-                {[form.pillar1, form.pillar2, form.pillar3]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </span>
-            </div>
+            {form.accounts.map((a, i) => (
+              <div key={i} className="border border-border p-3 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Account {i + 1}</span>
+                  <span className="text-foreground">@{a.handle}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Platforms</span>
+                  <span className="text-foreground text-right">
+                    {a.platforms.join(", ")}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Pillars</span>
+                  <span className="text-foreground text-right">
+                    {[a.pillar1, a.pillar2, a.pillar3]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                </div>
+              </div>
+            ))}
             <div className="flex justify-between">
               <span className="text-muted-foreground">Frequency</span>
               <span className="text-foreground">{form.frequency} per week</span>

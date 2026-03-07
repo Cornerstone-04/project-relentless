@@ -10,10 +10,13 @@ const auth = new google.auth.GoogleAuth({
 export async function appendSignup(data: {
   fullName: string;
   email: string;
-  accounts: { handle: string; platforms: string[] }[];
-  pillar1: string;
-  pillar2?: string;
-  pillar3?: string;
+  accounts: {
+    handle: string;
+    platforms: string[];
+    pillar1: string;
+    pillar2?: string;
+    pillar3?: string;
+  }[];
   frequency: string;
   postingDays: string[];
   goal: string;
@@ -27,7 +30,7 @@ export async function appendSignup(data: {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
-    range: "Signups!A:J",
+    range: "Signups!A:O",
     valueInputOption: "USER_ENTERED",
     insertDataOption: "INSERT_ROWS",
     requestBody: {
@@ -36,15 +39,33 @@ export async function appendSignup(data: {
           timestamp,
           data.fullName,
           data.email,
-          data.accounts
-            .map(
-              (a, i) =>
-                `Account ${i + 1}: @${a.handle} (${a.platforms.join(", ")})`,
-            )
-            .join(" | "),
-          data.pillar1,
-          data.pillar2 ?? "",
-          data.pillar3 ?? "",
+          data.accounts[0]?.handle ?? "",
+          data.accounts[0]?.platforms.join(", ") ?? "",
+          [
+            data.accounts[0]?.pillar1,
+            data.accounts[0]?.pillar2,
+            data.accounts[0]?.pillar3,
+          ]
+            .filter(Boolean)
+            .join(", "),
+          data.accounts[1]?.handle ?? "",
+          data.accounts[1]?.platforms.join(", ") ?? "",
+          [
+            data.accounts[1]?.pillar1,
+            data.accounts[1]?.pillar2,
+            data.accounts[1]?.pillar3,
+          ]
+            .filter(Boolean)
+            .join(", "),
+          data.accounts[2]?.handle ?? "",
+          data.accounts[2]?.platforms.join(", ") ?? "",
+          [
+            data.accounts[2]?.pillar1,
+            data.accounts[2]?.pillar2,
+            data.accounts[2]?.pillar3,
+          ]
+            .filter(Boolean)
+            .join(", "),
           data.frequency,
           data.postingDays.join(", "),
           data.goal,
