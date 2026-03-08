@@ -6,6 +6,7 @@ import {
   PROJECT_DOCS_URL,
   PROJECT_SHEETS_URL,
   RESEND_API_KEY,
+  WHATSAPP_GROUP_URL,
 } from "@/lib/constants";
 import { joinSchema } from "@/lib/join";
 import { appendSignup, getSignupCount, isAlreadySignedUp } from "@/lib/sheets";
@@ -32,17 +33,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
     }
 
-    const {
-      fullName,
-      email,
-      accounts,
-      pillar1,
-      pillar2,
-      pillar3,
-      frequency,
-      postingDays,
-      goal,
-    } = result.data;
+    const { fullName, email, accounts, frequency, postingDays, goal } =
+      result.data;
 
     const duplicate = await isAlreadySignedUp(result.data.email);
     if (duplicate) {
@@ -64,17 +56,10 @@ export async function POST(req: NextRequest) {
       fullName,
       email,
       accounts,
-      pillar1,
-      pillar2,
-      pillar3,
       frequency,
       postingDays,
       goal,
     });
-
-    const handlesSummary = accounts
-      .map((a) => `@${a.handle} (${a.platforms.join(", ")})`)
-      .join("<br/>");
 
     await resend.emails.send({
       from: "Project Relentless <hello@projectrelentless.live>",
@@ -83,8 +68,7 @@ export async function POST(req: NextRequest) {
       html: `
         <p><strong>${fullName}</strong> just signed up.</p>
         <p>Email: ${email}</p>
-        <p>Account(s): ${handlesSummary}</p>
-        <p>Pillars: ${[pillar1, pillar2, pillar3].filter(Boolean).join(", ")}</p>
+        <p>Account(s): ${accounts.map((a) => `@${a.handle} (${a.platforms.join(", ")}) — ${[a.pillar1, a.pillar2, a.pillar3].filter(Boolean).join(", ")}`).join("<br/>")}</p>
         <p>Frequency: ${frequency} per week</p>
         <p>Posting days: ${postingDays.join(", ")}</p>
         <p>Goal: ${goal}</p>
@@ -96,14 +80,12 @@ export async function POST(req: NextRequest) {
       ConfirmationEmail({
         fullName,
         accounts,
-        pillar1,
-        pillar2,
-        pillar3,
         frequency,
         postingDays,
         goal,
         trackerUrl: PROJECT_SHEETS_URL ?? "",
         guideUrl: PROJECT_DOCS_URL ?? "",
+        whatsappUrl: WHATSAPP_GROUP_URL ?? "",
       }),
     );
 

@@ -6,13 +6,21 @@ import {
 } from "@/lib/join";
 import { Field } from "./field";
 import { Input } from "@/components/ui/input";
+import { PillarInfo } from "./pillar-info";
+import { useState } from "react";
 
 type Account = JoinFormData["accounts"][number];
 
 type AccountFieldsProps = {
   index: number;
   account: Account;
-  error?: { handle?: string; platforms?: string };
+  error?: {
+    handle?: string;
+    platforms?: string;
+    pillar1?: string;
+    pillar2?: string;
+    pillar3?: string;
+  };
   onChange: (index: number, updated: Account) => void;
   onRemove?: (index: number) => void;
 };
@@ -24,8 +32,14 @@ export function AccountFields({
   onChange,
   onRemove,
 }: AccountFieldsProps) {
+  const [showPillarInfo, setShowPillarInfo] = useState(false);
+
   function updateHandle(value: string) {
     onChange(index, { ...account, handle: value.replace(/^@/, "") });
+  }
+
+  function updateField(field: keyof Account, value: string) {
+    onChange(index, { ...account, [field]: value });
   }
 
   function togglePlatform(platform: string) {
@@ -79,6 +93,38 @@ export function AccountFields({
             </button>
           ))}
         </div>
+      </Field>
+
+      <PillarInfo
+        showPillarInfo={showPillarInfo}
+        setShowPillarInfo={setShowPillarInfo}
+      />
+
+      <Field label="Pillar 1" error={error?.pillar1} required={index === 0}>
+        <Input
+          placeholder="e.g. Editing Tutorials"
+          value={account.pillar1}
+          onChange={(e) => updateField("pillar1", e.target.value)}
+          className={inputClass(!!error?.pillar1)}
+        />
+      </Field>
+
+      <Field label="Pillar 2 (optional)">
+        <Input
+          placeholder="e.g. Client Projects"
+          value={account.pillar2 ?? ""}
+          onChange={(e) => updateField("pillar2", e.target.value)}
+          className={inputClass(false)}
+        />
+      </Field>
+
+      <Field label="Pillar 3 (optional)">
+        <Input
+          placeholder="e.g. Content Strategy Tips"
+          value={account.pillar3 ?? ""}
+          onChange={(e) => updateField("pillar3", e.target.value)}
+          className={inputClass(false)}
+        />
       </Field>
     </div>
   );

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormSection } from "./form-section";
-import { PillarInfo } from "./pillar-info";
 import { SuccessState } from "./success-state";
 import { Field } from "./field";
 import {
@@ -35,7 +34,6 @@ type JoinFormErrors = Partial<
 
 export function JoinForm() {
   const [form, setForm] = useState<JoinFormData>(initialForm);
-  const [showPillarInfo, setShowPillarInfo] = useState(false);
   const [errors, setErrors] = useState<JoinFormErrors>({});
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error" | "duplicate" | "full"
@@ -85,7 +83,10 @@ export function JoinForm() {
     if (form.accounts.length >= 3) return;
     setForm((prev) => ({
       ...prev,
-      accounts: [...prev.accounts, { handle: "", platforms: [] }],
+      accounts: [
+        ...prev.accounts,
+        { handle: "", platforms: [], pillar1: "", pillar2: "", pillar3: "" },
+      ],
     }));
   }
 
@@ -236,46 +237,9 @@ export function JoinForm() {
         </FormSection>
 
         {/* Section 2: Content Pillars */}
-        <FormSection number="02" title="Your Content Pillars" delay={0.3}>
-          <p className="text-muted-foreground text-sm font-light -mt-2">
-            Max 3. Every post must fit into one of these buckets. Keep them
-            specific.
-          </p>
-          <PillarInfo
-            showPillarInfo={showPillarInfo}
-            setShowPillarInfo={setShowPillarInfo}
-          />
-
-          <Field label="Pillar 1" error={errors.pillar1} required>
-            <Input
-              placeholder="e.g. Editing Tutorials"
-              value={form.pillar1}
-              onChange={(e) => update("pillar1", e.target.value)}
-              className={inputClass(!!errors.pillar1)}
-            />
-          </Field>
-
-          <Field label="Pillar 2 (optional)" error={errors.pillar2}>
-            <Input
-              placeholder="e.g. Client Projects"
-              value={form.pillar2}
-              onChange={(e) => update("pillar2", e.target.value)}
-              className={inputClass(!!errors.pillar2)}
-            />
-          </Field>
-
-          <Field label="Pillar 3 (optional)" error={errors.pillar3}>
-            <Input
-              placeholder="e.g. Content Strategy Tips"
-              value={form.pillar3}
-              onChange={(e) => update("pillar3", e.target.value)}
-              className={inputClass(!!errors.pillar3)}
-            />
-          </Field>
-        </FormSection>
 
         {/* Section 3: Schedule */}
-        <FormSection number="03" title="Your Schedule" delay={0.4}>
+        <FormSection number="02" title="Your Schedule" delay={0.3}>
           <Field label="Posts per week" error={errors.frequency} required>
             <div className="grid grid-cols-4 gap-2">
               {FREQUENCIES.map((f) => (
@@ -308,7 +272,7 @@ export function JoinForm() {
         </FormSection>
 
         {/* Section 4: Goal */}
-        <FormSection number="04" title="Your 30-Day Goal" delay={0.5}>
+        <FormSection number="03" title="Your 30-Day Goal" delay={0.4}>
           <Field
             label="What do you want to achieve?"
             error={errors.goal}
