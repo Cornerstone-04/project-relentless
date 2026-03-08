@@ -14,6 +14,7 @@ import {
 } from "@react-email/components";
 import type { ConfirmationEmailProps } from "@/types";
 import { styles } from "./_styles";
+// import { PREVIEW_DETAILS } from "@/lib/constants";
 
 export default function ConfirmationEmail({
   fullName,
