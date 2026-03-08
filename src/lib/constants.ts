@@ -33,7 +33,7 @@ const PREVIEW_DETAILS = {
   goal: "Build a community of 500 builders",
   trackerUrl: "https://example.com/tracker",
   guideUrl: "https://example.com/guide",
-  whatsappUrl: "https://whatsapp.com",
+  whatsappUrl: "https://chat.whatsapp.com",
 };
 
 export {
